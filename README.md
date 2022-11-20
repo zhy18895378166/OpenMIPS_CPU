@@ -1,1 +1,1 @@
-# OpenMIPS_CPU master branch
+# OpenMIPS_CPU dev/v1.0.x branch
