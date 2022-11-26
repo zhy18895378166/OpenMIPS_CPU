@@ -65,6 +65,8 @@ module openmips(
 	wire[`RegAddrBus]		reg2_addr;
 	wire[`RegBus]			reg2_data;
 	
+	
+	
 /************************************************************************************************/
 /*										第二段：各模块例化									    */
 /************************************************************************************************/
@@ -100,7 +102,20 @@ module openmips(
 		//送到ID/EX模块的信息
 		.aluop_o(id_aluop_o),			.alusel_o(id_alusel_o),
 		.reg1_o(id_reg1_o),				.reg2_o(id_reg2_o),
-		.wd_addr_o(id_wd_addr_o),		.wreg_o(id_wreg_o)
+		.wd_addr_o(id_wd_addr_o),		.wreg_o(id_wreg_o),
+		
+		/*---------------------------------------------------------------------------------------*/
+		/*							  fix bug 1:解决数据相关问题								 */
+		/*---------------------------------------------------------------------------------------*/
+		//来自执行阶段EX的运算结果
+		.ex_wreg_i(ex_wreg_o), 
+		.ex_wd_addr_i(ex_wd_addr_o),
+		.ex_wdata_i(ex_wdata_o),
+		
+		//来自访存阶段MEM模块的运算结果
+		.mem_wreg_i(mem_wreg_o),
+		.mem_wd_addr_i(mem_wd_addr_o),
+		.mem_wdata_i(mem_wdata_o)
 	);
 	
 	

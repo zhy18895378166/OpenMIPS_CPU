@@ -8,6 +8,7 @@ module id(
 	input wire[`RegBus]				reg1_data_i,
 	input wire[`RegBus]				reg2_data_i,
 	
+	
 	//输出给执行阶段的信息
 	output reg[`AluOpBus]			aluop_o,
 	output reg[`AluSelBus]			alusel_o,
@@ -20,7 +21,20 @@ module id(
 	output reg 						reg1_read_o,
 	output reg 						reg2_read_o,
 	output reg[`RegAddrBus]			reg1_addr_o,
-	output reg[`RegAddrBus]			reg2_addr_o
+	output reg[`RegAddrBus]			reg2_addr_o,
+	
+	/*---------------------------------------------------------------------------------------*/
+	/*							  fix bug 1:解决数据相关问题								 */
+	/*---------------------------------------------------------------------------------------*/
+	//处于执行阶段的指令的运算结果
+	input wire				        ex_wreg_i,
+	input wire[`RegAddrBus]			ex_wd_addr_i,
+	input wire[`RegBus]			    ex_wdata_i,
+	
+	//处于访存阶段的指令的运算结果
+	input wire				        mem_wreg_i,
+	input wire[`RegAddrBus]			mem_wd_addr_i,
+	input wire[`RegBus]			    mem_wdata_i
 );
 	
 	/* 取指令的功能码 */
@@ -81,6 +95,14 @@ module id(
 	always @ (*) begin
 		if(rst == `RstEnable) begin
 			reg1_o <= `ZeroWord;
+		/*EX阶段传回*/
+		end else if((reg1_read_o == `ReadEnable) && (ex_wreg_i == `WriteEnable)
+					&& (ex_wd_addr_i == reg1_addr_o)) begin
+			reg1_o	<= ex_wdata_i;
+		/*MEM阶段传回*/
+		end else if((reg1_read_o == `ReadEnable) && (mem_wreg_i == `WriteEnable)
+					&& (mem_wd_addr_i == reg1_addr_o)) begin
+			reg1_o	<= mem_wdata_i;	
 		end else if(reg1_read_o == `ReadEnable) begin
 			reg1_o <= reg1_data_i;    //Regfile读端口1的输出值
 		end else if(reg1_read_o == `ReadDisable) begin
@@ -97,6 +119,14 @@ module id(
 	always @ (*) begin
 		if(rst == `RstEnable) begin
 			reg2_o <= `ZeroWord;
+		/*EX阶段传回*/
+		end else if((reg2_read_o == `ReadEnable) && (ex_wreg_i == `WriteEnable)
+					&& (ex_wd_addr_i == reg2_addr_o)) begin
+			reg2_o	<= ex_wdata_i;
+		/*MEM阶段传回*/
+		end else if((reg2_read_o == `ReadEnable) && (mem_wreg_i == `WriteEnable)
+					&& (mem_wd_addr_i == reg2_addr_o)) begin
+			reg2_o	<= mem_wdata_i;	
 		end else if(reg2_read_o == `ReadEnable) begin
 			reg2_o <= reg2_data_i;    //Regfile读端口2的输出值
 		end else if(reg2_read_o == `ReadDisable) begin

@@ -13,7 +13,7 @@ module inst_rom(
 
 	reg[`InstBus]  inst_mem[0:`InstMemNum-1];
 	
-	initial $readmemh ( "./rtl/inst_rom.data", inst_mem );
+	initial $readmemh ( "./rom_data/inst_rom.data", inst_mem );
 	
 /************************************************************************************************/
 /*										第二段：取指令											*/
