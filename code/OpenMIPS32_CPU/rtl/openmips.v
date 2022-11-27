@@ -102,7 +102,17 @@ module openmips(
 		//送到ID/EX模块的信息
 		.aluop_o(id_aluop_o),			.alusel_o(id_alusel_o),
 		.reg1_o(id_reg1_o),				.reg2_o(id_reg2_o),
-		.wd_addr_o(id_wd_addr_o),		.wreg_o(id_wreg_o),
+		.wd_addr_o(id_wd_addr_o),		.wreg_o(id_wreg_o)
+	);
+	
+	
+	//4.通用寄存器Regfile模块例化
+	regfile regfile0(
+		.clk(clk),			.rst(rst),
+		.we(wb_wreg_i),		.waddr(wb_wd_addr_i),	.wdata(wb_wdata_i),
+		
+		.re1(reg1_read),	.raddr1(reg1_addr),		.rdata1(reg1_data),
+		.re2(reg2_read),	.raddr2(reg2_addr),		.rdata2(reg2_data),
 		
 		/*---------------------------------------------------------------------------------------*/
 		/*							  fix bug 1:解决数据相关问题								 */
@@ -116,16 +126,6 @@ module openmips(
 		.mem_wreg_i(mem_wreg_o),
 		.mem_wd_addr_i(mem_wd_addr_o),
 		.mem_wdata_i(mem_wdata_o)
-	);
-	
-	
-	//4.通用寄存器Regfile模块例化
-	regfile regfile0(
-		.clk(clk),			.rst(rst),
-		.we(wb_wreg_i),		.waddr(wb_wd_addr_i),	.wdata(wb_wdata_i),
-		
-		.re1(reg1_read),	.raddr1(reg1_addr),		.rdata1(reg1_data),
-		.re2(reg2_read),	.raddr2(reg2_addr),		.rdata2(reg2_data)
 	);
 	
 	//5.ID/EX模块例化
